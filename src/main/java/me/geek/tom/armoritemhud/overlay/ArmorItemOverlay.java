@@ -7,6 +7,8 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
+import static me.geek.tom.armoritemhud.overlay.armor.ArmorSlotRenderer.ITEM_GUI_HEIGHT;
+
 public class ArmorItemOverlay implements IOverlay {
 
     private ArmorItemSet armor = new ArmorItemSet(
@@ -17,11 +19,15 @@ public class ArmorItemOverlay implements IOverlay {
     );
 
     public ArmorItemOverlay() {
+
+        float screenHeight = Minecraft.getInstance().getMainWindow().getScaledHeight();
+        float startPosY = screenHeight - (ITEM_GUI_HEIGHT * 4);
+
         OverlayManager.registerOverlays(
-                new ArmorSlotRenderer(0, 10, 10, this.armor),
-                new ArmorSlotRenderer(1, 10, 10, this.armor),
-                new ArmorSlotRenderer(2, 10, 10, this.armor),
-                new ArmorSlotRenderer(3, 10, 10, this.armor)
+                new ArmorSlotRenderer(0, 10, startPosY - 10, this.armor),
+                new ArmorSlotRenderer(1, 10, startPosY - 10, this.armor),
+                new ArmorSlotRenderer(2, 10, startPosY - 10, this.armor),
+                new ArmorSlotRenderer(3, 10, startPosY - 10, this.armor)
         );
     }
 
