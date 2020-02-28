@@ -6,11 +6,15 @@ import me.geek.tom.armoritemhud.overlay.IOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
 
+@SuppressWarnings("SameParameterValue")
 public class ArmorSlotRenderer extends Screen implements IOverlay {
 
     private int slot;
@@ -41,13 +45,13 @@ public class ArmorSlotRenderer extends Screen implements IOverlay {
 
         RenderSystem.translatef(startPosX, startPosY + ofset, 0.0f);
 
-        this.renderItemStack(item, 0, 0);
-
-        int nameWidth = this.renderName(item);
+        int nameWidth = this.nameWidth(item);
 
         fill(-1, -1, 17 + nameWidth + 3, 17, 0x88000000);
 
+        this.renderName(item);
         this.renderDurBar(item, nameWidth);
+        this.renderItemStack(item);
 
         RenderSystem.popMatrix();
     }
@@ -59,7 +63,7 @@ public class ArmorSlotRenderer extends Screen implements IOverlay {
         startPosY -= 8;
     }
 
-    private void renderItemStack(ItemStack itm, int x, int y) {
+    private void renderItemStack(ItemStack itm) {
         ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0f);
 
@@ -71,7 +75,7 @@ public class ArmorSlotRenderer extends Screen implements IOverlay {
             RenderSystem.enableLighting();
             RenderHelper.setupGui3DDiffuseLighting();
             try {
-                itemRender.renderItemAndEffectIntoGUI(itm, x, y);
+                itemRender.renderItemAndEffectIntoGUI(itm, 0, 0);
             } catch (Exception ignored) {
             }
             RenderSystem.popMatrix();
@@ -80,19 +84,21 @@ public class ArmorSlotRenderer extends Screen implements IOverlay {
         }
     }
 
-    private int renderName(ItemStack item) {
+    private int nameWidth(ItemStack item) {
+        return Minecraft.getInstance().fontRenderer.getStringWidth(item.getDisplayName().getString());
+    }
+
+    private void renderName(ItemStack item) {
         FontRenderer font = Minecraft.getInstance().fontRenderer;
 
         RenderSystem.pushMatrix();
 
         String name = item.getDisplayName().getString();
 
-        RenderSystem.translatef(17, 0, 0);
+        RenderSystem.translatef(18, 0, 0);
         font.drawStringWithShadow(name, 0, 2, 0xAAAAAA);
 
         RenderSystem.popMatrix();
-
-        return font.getStringWidth(name);
     }
 
     private void renderDurBar(ItemStack item, int barWidth) {
@@ -101,25 +107,46 @@ public class ArmorSlotRenderer extends Screen implements IOverlay {
         int maxDurability = item.getMaxDamage();
         int currentDurability = item.getDamage();
 
-        RenderSystem.translatef(17, 10, 0);
+        RenderSystem.translatef(17, 12, 0);
 
-        int rescaledWidth = rescale(currentDurability, 0, maxDurability, 0, barWidth);
+        int rescaledWidth = rescale(currentDurability, maxDurability, barWidth);
 
-        fill(0, 0, barWidth, 5, 0xFF0000);
-        fill(0, 0, rescaledWidth, 5, 0xFF00); // @TODO Fix bar not showing?
+        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 0.0f);
+        drawBar(barWidth, 3, 0xFF0000);
+        drawBar(rescaledWidth, 3, 0xFF00);
 
         RenderSystem.popMatrix();
     }
 
-    private int rescale(int val, int currentMin, int currentMax, int newMin, int newMax) {
-        float unscaledDif = val - currentMin;
-        float currentWidth = currentMax - currentMin;
-        float ratio = unscaledDif / currentWidth;
+    private int rescale(int val, int currentMax, int newMax) {
+        float ratio = (float) val / (float) currentMax;
 
-        float scaledWidth = newMax - newMin;
-        float scaledDif = ratio * scaledWidth;
-        float newVal = newMin + scaledDif;
+        float scaledDif = (1 - ratio) * (float) newMax;
 
-        return (int) newVal;
+        return (int) scaledDif;
+    }
+
+    private void drawBar(int width, int height, int colour) {
+        RenderSystem.disableDepthTest();
+        RenderSystem.disableTexture();
+        RenderSystem.disableAlphaTest();
+        RenderSystem.disableBlend();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+
+        int red = colour >> 16 & 255;
+        int green = colour >> 8 & 255;
+        int blue = colour & 255;
+
+        this.draw(bufferbuilder, 0, 0, width, height, red, green, blue, 255);
+    }
+
+    private void draw(BufferBuilder renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
+        renderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        renderer.pos(x, y, 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.pos(x, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.pos(x + width, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.pos(x + width, y, 0.0D).color(red, green, blue, alpha).endVertex();
+        Tessellator.getInstance().draw();
     }
 }
