@@ -1,6 +1,5 @@
 package me.geek.tom.armoritemhud.overlay;
 
-import me.geek.tom.armoritemhud.OverlayManager;
 import me.geek.tom.armoritemhud.overlay.armor.ArmorSlotRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;

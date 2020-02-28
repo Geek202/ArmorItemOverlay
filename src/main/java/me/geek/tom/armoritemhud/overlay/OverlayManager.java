@@ -1,4 +1,4 @@
-package me.geek.tom.armoritemhud;
+package me.geek.tom.armoritemhud.overlay;
 
 import com.google.common.collect.Lists;
 import me.geek.tom.armoritemhud.overlay.IOverlay;
