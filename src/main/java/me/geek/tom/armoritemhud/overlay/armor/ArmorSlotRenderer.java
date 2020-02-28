@@ -112,8 +112,8 @@ public class ArmorSlotRenderer extends Screen implements IOverlay {
         int rescaledWidth = rescale(currentDurability, maxDurability, barWidth);
 
         RenderSystem.color4f(1.0f, 1.0f, 1.0f, 0.0f);
-        drawBar(barWidth, 3, 0xFF0000);
-        drawBar(rescaledWidth, 3, 0xFF00);
+        drawBar(barWidth, 3, 0x88AA0000);
+        drawBar(rescaledWidth, 3, 0xFF00AA00);
 
         RenderSystem.popMatrix();
     }
@@ -129,16 +129,18 @@ public class ArmorSlotRenderer extends Screen implements IOverlay {
     private void drawBar(int width, int height, int colour) {
         RenderSystem.disableDepthTest();
         RenderSystem.disableTexture();
-        RenderSystem.disableAlphaTest();
-        RenderSystem.disableBlend();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
 
         int red = colour >> 16 & 255;
         int green = colour >> 8 & 255;
         int blue = colour & 255;
+        int alpha = colour >> 24 & 255;
 
-        this.draw(bufferbuilder, 0, 0, width, height, red, green, blue, 255);
+        this.draw(bufferbuilder, 0, 0, width, height, red, green, blue, alpha);
+
+        RenderSystem.enableTexture();
+        RenderSystem.enableDepthTest();
     }
 
     private void draw(BufferBuilder renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
