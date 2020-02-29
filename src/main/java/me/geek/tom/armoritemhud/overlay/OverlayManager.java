@@ -1,7 +1,6 @@
 package me.geek.tom.armoritemhud.overlay;
 
 import com.google.common.collect.Lists;
-import me.geek.tom.armoritemhud.overlay.IOverlay;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

@@ -1,7 +1,9 @@
 package me.geek.tom.armoritemhud.overlay.armor;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import me.geek.tom.armoritemhud.Config;
 import me.geek.tom.armoritemhud.overlay.ArmorItemOverlay;
+import me.geek.tom.armoritemhud.overlay.EnumOverlayPosition;
 import me.geek.tom.armoritemhud.overlay.IOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -13,6 +15,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
+import org.apache.commons.lang3.tuple.Pair;
 
 @SuppressWarnings("SameParameterValue")
 public class ArmorSlotRenderer extends Screen implements IOverlay {
@@ -34,20 +37,22 @@ public class ArmorSlotRenderer extends Screen implements IOverlay {
 
     @Override
     public void render() {
-        if (this.armor.get(this.slot).isEmpty())
+        if (this.armor.get(this.slot).isEmpty() || !Config.SHOW_OVERLAY.get())
             return;
 
         RenderSystem.pushMatrix();
 
         ItemStack item = this.armor.get(this.slot);
 
-        float ofset = this.slot * ITEM_GUI_HEIGHT;
-
-        RenderSystem.translatef(startPosX, startPosY + ofset, 0.0f);
+        // RenderSystem.translatef(startPosX, startPosY + ofset, 0.0f);
 
         int nameWidth = this.nameWidth(item);
 
-        fill(-1, -1, 17 + nameWidth + 3, 17, 0x88000000);
+        int boxWidth = 17 + nameWidth + 3;
+        int boxHeight = 17;
+        preconfigureRender(boxWidth, boxHeight);
+
+        fill(-1, -1, boxWidth, boxHeight, 0x88000000);
 
         this.renderName(item);
         this.renderDurBar(item, nameWidth);
@@ -56,11 +61,29 @@ public class ArmorSlotRenderer extends Screen implements IOverlay {
         RenderSystem.popMatrix();
     }
 
+    private void preconfigureRender(int boxWidth, int boxHeight) {
+        EnumOverlayPosition overlayPos = Config.OVERLAY_POS.get();
+
+        int ofset = ITEM_GUI_HEIGHT * 3;
+        if (overlayPos.equals(EnumOverlayPosition.BOTTOMLEFT) ||
+                overlayPos.equals(EnumOverlayPosition.BOTTOMRIGHT)) {
+            ofset *= -1;
+        }
+
+        int posOfset = (3 - this.slot) * ITEM_GUI_HEIGHT;
+
+        Pair<Integer, Integer> pos = overlayPos.toScreenCoords(boxWidth, boxHeight, 0, ofset - posOfset);
+        int x = pos.getLeft();
+        int y = pos.getRight();
+
+        RenderSystem.translatef(x, y, 0);
+    }
+
     @Override
     public void update() {
-        float screenHeight = Minecraft.getInstance().getMainWindow().getScaledHeight();
-        startPosY = screenHeight - (ITEM_GUI_HEIGHT * 4);
-        startPosY -= 8;
+        // float screenHeight = Minecraft.getInstance().getMainWindow().getScaledHeight();
+        // startPosY = screenHeight - (ITEM_GUI_HEIGHT * 4);
+        // startPosY -= 8;
     }
 
     private void renderItemStack(ItemStack itm) {

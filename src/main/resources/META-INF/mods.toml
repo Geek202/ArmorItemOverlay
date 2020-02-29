@@ -1,22 +1,1 @@
-modLoader="javafml"
-loaderVersion="[31,)"
-authors="Tom_The_Geek"
-[[mods]]
-modId="ait"
-version="${file.jarVersion}"
-displayName="Armor Item Overlay"
-description='''
-Shows info about your armor on the HUD
-'''
-[[dependencies.ait]]
-    modId="forge"
-    mandatory=true
-    versionRange="[31,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.ait]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.15,)"
-    ordering="NONE"
-    side="BOTH"
+modLoader="javafml"loaderVersion="[31,)"authors="Tom_The_Geek"[[mods]]modId="ait"version="${file.jarVersion}"displayName="Armor Item Overlay"description='''Shows info about your armor on the HUD'''[[dependencies.ait]]    modId="forge"    mandatory=true    versionRange="[31,)"    ordering="NONE"    side="BOTH"[[dependencies.ait]]    modId="minecraft"    mandatory=true    versionRange="[1.15,)"    ordering="NONE"    side="BOTH"
