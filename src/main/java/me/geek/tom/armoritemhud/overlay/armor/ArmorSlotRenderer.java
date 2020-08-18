@@ -1,5 +1,6 @@
 package me.geek.tom.armoritemhud.overlay.armor;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.geek.tom.armoritemhud.Config;
 import me.geek.tom.armoritemhud.overlay.ArmorItemOverlay;
@@ -20,10 +21,10 @@ import org.apache.commons.lang3.tuple.Pair;
 @SuppressWarnings("SameParameterValue")
 public class ArmorSlotRenderer extends Screen implements IOverlay {
 
-    private int slot;
+    private final int slot;
     private float startPosX;
     private float startPosY;
-    private ArmorItemOverlay.ArmorItemSet armor;
+    private final ArmorItemOverlay.ArmorItemSet armor;
 
     public static final int ITEM_GUI_HEIGHT = 20;
 
@@ -36,7 +37,7 @@ public class ArmorSlotRenderer extends Screen implements IOverlay {
     }
 
     @Override
-    public void render() {
+    public void render(MatrixStack stack) {
         if (this.armor.get(this.slot).isEmpty() || !Config.SHOW_OVERLAY.get())
             return;
 
@@ -52,9 +53,9 @@ public class ArmorSlotRenderer extends Screen implements IOverlay {
         int boxHeight = 17;
         preconfigureRender(boxWidth, boxHeight);
 
-        fill(-1, -1, boxWidth, boxHeight, 0x88000000);
+        fill(stack, -1, -1, boxWidth, boxHeight, 0x88000000);
 
-        this.renderName(item);
+        this.renderName(stack, item);
         this.renderDurBar(item, nameWidth);
         this.renderItemStack(item);
 
@@ -111,7 +112,7 @@ public class ArmorSlotRenderer extends Screen implements IOverlay {
         return Minecraft.getInstance().fontRenderer.getStringWidth(item.getDisplayName().getString());
     }
 
-    private void renderName(ItemStack item) {
+    private void renderName(MatrixStack stack, ItemStack item) {
         FontRenderer font = Minecraft.getInstance().fontRenderer;
 
         RenderSystem.pushMatrix();
@@ -119,7 +120,7 @@ public class ArmorSlotRenderer extends Screen implements IOverlay {
         String name = item.getDisplayName().getString();
 
         RenderSystem.translatef(18, 0, 0);
-        font.drawStringWithShadow(name, 0, 2, 0xAAAAAA);
+        font.drawStringWithShadow(stack, name, 0, 2, 0xAAAAAA);
 
         RenderSystem.popMatrix();
     }

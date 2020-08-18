@@ -34,13 +34,13 @@ public class PositionEditScreen extends Screen {
         int relX = (this.width - WIDTH) / 2;
         int relY = (this.height - HEIGHT) / 2;
 
-        addButton(new Button(relX + 10, relY + 20, 100, 20, "Top left", button -> setPos(EnumOverlayPosition.TOPLEFT)));
-        addButton(new Button(relX + 10, relY + 40, 100, 20, "Top Right", button -> setPos(EnumOverlayPosition.TOPRIGHT)));
-        addButton(new Button(relX + 10, relY + 60, 100, 20, "Top Center", button -> setPos(EnumOverlayPosition.TOPCENTER)));
-        addButton(new Button(relX + 10, relY + 80, 100, 20, "Bottom Left", button -> setPos(EnumOverlayPosition.BOTTOMLEFT)));
-        addButton(new Button(relX + 10, relY + 100, 100, 20, "Bottom Right", button -> setPos(EnumOverlayPosition.BOTTOMRIGHT)));
+        addButton(new Button(relX + 10, relY + 20, 100, 20, new StringTextComponent("Top left"), button -> setPos(EnumOverlayPosition.TOPLEFT)));
+        addButton(new Button(relX + 10, relY + 40, 100, 20, new StringTextComponent("Top Right"), button -> setPos(EnumOverlayPosition.TOPRIGHT)));
+        addButton(new Button(relX + 10, relY + 60, 100, 20, new StringTextComponent("Top Center"), button -> setPos(EnumOverlayPosition.TOPCENTER)));
+        addButton(new Button(relX + 10, relY + 80, 100, 20, new StringTextComponent("Bottom Left"), button -> setPos(EnumOverlayPosition.BOTTOMLEFT)));
+        addButton(new Button(relX + 10, relY + 100, 100, 20, new StringTextComponent("Bottom Right"), button -> setPos(EnumOverlayPosition.BOTTOMRIGHT)));
 
-        addButton(new Button(relX + 10, relY + 120, 100, 20, "Toggle Display", this::toggle));
+        addButton(new Button(relX + 10, relY + 120, 100, 20, new StringTextComponent("Toggle Display"), this::toggle));
     }
 
     private void toggle(Button btn) {
@@ -54,6 +54,6 @@ public class PositionEditScreen extends Screen {
     @SubscribeEvent
     public static void onScreenOpen(GuiScreenEvent.InitGuiEvent.Post event) {
         if (event.getGui() instanceof InventoryScreen)
-        event.addWidget(new Button(5, 5, 25, 20, "AIO", PositionEditScreen::open));
+        event.addWidget(new Button(5, 5, 25, 20, new StringTextComponent("AIO"), PositionEditScreen::open));
     }
 }

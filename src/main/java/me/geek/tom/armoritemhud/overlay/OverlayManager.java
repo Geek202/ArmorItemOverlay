@@ -1,6 +1,7 @@
 package me.geek.tom.armoritemhud.overlay;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -14,7 +15,7 @@ import static me.geek.tom.armoritemhud.ArmorItemHud.MODID;
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class OverlayManager {
 
-    private static List<IOverlay> overlays = Lists.newArrayList();
+    private static final List<IOverlay> overlays = Lists.newArrayList();
 
     public static void registerOverlays(IOverlay... newOverlays) {
         overlays.addAll(Arrays.asList(newOverlays));
@@ -24,15 +25,15 @@ public class OverlayManager {
     @SubscribeEvent
     public static void onRenderOverlay(RenderGameOverlayEvent.Post event) {
         if (event.getType().equals(RenderGameOverlayEvent.ElementType.HOTBAR)) {
-            render();
+            render(event.getMatrixStack());
         }
     }
 
-    private static void render() {
+    private static void render(MatrixStack stack) {
         for (IOverlay overlay : overlays)
             overlay.update();
 
         for (IOverlay overlay : overlays)
-            overlay.render();
+            overlay.render(stack);
     }
 }

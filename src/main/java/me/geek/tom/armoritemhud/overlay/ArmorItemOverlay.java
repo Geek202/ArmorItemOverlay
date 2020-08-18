@@ -1,5 +1,6 @@
 package me.geek.tom.armoritemhud.overlay;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import me.geek.tom.armoritemhud.overlay.armor.ArmorSlotRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -31,7 +32,7 @@ public class ArmorItemOverlay implements IOverlay {
     }
 
     @Override
-    public void render() {
+    public void render(MatrixStack stack) {
 
     }
 
